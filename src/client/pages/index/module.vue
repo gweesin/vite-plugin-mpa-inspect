@@ -78,7 +78,7 @@ const sourcemaps = computed(() => {
 
 getHot().then((hot) => {
   if (hot) {
-    hot.on('vite-plugin-inspect:update', ({ ids }: HMRData) => {
+    hot.on('vite-plugin-mpa-inspect:update', ({ ids }: HMRData) => {
       if (id.value && ids.includes(id.value))
         refetch()
     })

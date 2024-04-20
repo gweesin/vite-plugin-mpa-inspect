@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import Inspect from 'vite-plugin-inspect'
+import Inspect from 'vite-plugin-mpa-inspect'
 
 // https://vitejs.dev/config/
 export default defineConfig({

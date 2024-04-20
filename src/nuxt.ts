@@ -6,7 +6,7 @@ export { Options as ModuleOptions }
 
 export default defineNuxtModule<Options>({
   meta: {
-    name: 'vite-plugin-inspect',
+    name: 'vite-plugin-mpa-inspect',
     configKey: 'inspect',
   },
   setup(options) {

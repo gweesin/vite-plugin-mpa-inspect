@@ -5,7 +5,7 @@ import { parse as parseErrorStacks } from 'error-stack-parser-es'
 import type { ParsedError } from '../types'
 import type { ViteInspectContext } from './context'
 
-const debug = Debug('vite-plugin-inspect')
+const debug = Debug('vite-plugin-mpa-inspect')
 
 type HookHandler<T> = T extends ObjectHook<infer F> ? F : T
 type HookWrapper<K extends keyof Plugin> = (

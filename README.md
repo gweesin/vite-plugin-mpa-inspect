@@ -1,6 +1,6 @@
-# vite-plugin-inspect
+# vite-plugin-mpa-inspect
 
-[![NPM version](https://img.shields.io/npm/v/vite-plugin-inspect?color=a1b858&label=)](https://www.npmjs.com/package/vite-plugin-inspect)
+[![NPM version](https://img.shields.io/npm/v/vite-plugin-mpa-inspect?color=a1b858&label=)](https://www.npmjs.com/package/vite-plugin-mpa-inspect)
 
 Inspect the intermediate state of Vite plugins. Useful for debugging and authoring plugins.
 
@@ -11,7 +11,7 @@ Inspect the intermediate state of Vite plugins. Useful for debugging and authori
 ## Install
 
 ```bash
-npm i -D vite-plugin-inspect
+npm i -D vite-plugin-mpa-inspect
 ```
 
 > Since `vite-plugin-inspect@v0.7.0`, Vite v3.1 or above is required.
@@ -20,7 +20,7 @@ Add plugin to your `vite.config.ts`:
 
 ```ts
 // vite.config.ts
-import Inspect from 'vite-plugin-inspect'
+import Inspect from 'vite-plugin-mpa-inspect'
 
 export default {
   plugins: [
@@ -29,7 +29,7 @@ export default {
 }
 ```
 
-Then run `npm run dev` and visit [localhost:5173/__inspect/](http://localhost:5173/__inspect/) to inspect the modules.
+Then run `npm run dev` and visit [localhost:5173/__inspect_mpa/](http://localhost:5173/__inspect_mpa/) to inspect the modules.
 
 ## Build Mode
 
@@ -37,7 +37,7 @@ To inspect transformation in build mode, you can pass the `build: true` option:
 
 ```ts
 // vite.config.ts
-import Inspect from 'vite-plugin-inspect'
+import Inspect from 'vite-plugin-mpa-inspect'
 
 export default {
   plugins: [

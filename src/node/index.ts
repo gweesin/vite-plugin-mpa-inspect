@@ -15,7 +15,7 @@ import { createPreviewServer } from './preview'
 
 export * from './options'
 
-const NAME = 'vite-plugin-inspect'
+const NAME = 'vite-plugin-mpa-inspect'
 const isCI = !!process.env.CI
 
 export interface ViteInspectAPI {
@@ -117,7 +117,7 @@ export default function PluginInspect(options: Options = {}): Plugin {
 
     const base = (options.base ?? server.config.base) || '/'
 
-    server.middlewares.use(`${base}__inspect`, sirv(DIR_CLIENT, {
+    server.middlewares.use(`${base}__inspect_mpa`, sirv(DIR_CLIENT, {
       single: true,
       dev: true,
     }))
@@ -132,7 +132,7 @@ export default function PluginInspect(options: Options = {}): Plugin {
       moduleUpdated: () => {},
     }
 
-    const rpcServer = createRPCServer<RPCFunctions>('vite-plugin-inspect', server.ws, rpcFunctions)
+    const rpcServer = createRPCServer<RPCFunctions>('vite-plugin-mpa-inspect', server.ws, rpcFunctions)
 
     const debouncedModuleUpdated = debounce(() => {
       rpcServer.moduleUpdated.asEvent()
@@ -194,13 +194,13 @@ export default function PluginInspect(options: Options = {}): Plugin {
       if (!silent) {
         const colorUrl = (url: string) => c.green(url.replace(/:(\d+)\//, (_, port) => `:${c.bold(port)}/`))
         // eslint-disable-next-line no-console
-        console.log(`  ${c.green('➜')}  ${c.bold('Inspect')}: ${colorUrl(`${host}${base}__inspect/`)}`)
+        console.log(`  ${c.green('➜')}  ${c.bold('Inspect')}: ${colorUrl(`${host}${base}__inspect_mpa/`)}`)
       }
 
       if (_open && !isCI) {
         // a delay is added to ensure the app page is opened first
         setTimeout(() => {
-          openBrowser(`${host}${base}__inspect/`)
+          openBrowser(`${host}${base}__inspect_mpa/`)
         }, 500)
       }
     }
@@ -267,7 +267,7 @@ export default function PluginInspect(options: Options = {}): Plugin {
       const ids = modules.map(module => module.id)
       server.ws.send({
         type: 'custom',
-        event: 'vite-plugin-inspect:update',
+        event: 'vite-plugin-mpa-inspect:update',
         data: { ids } as HMRData,
       })
     },

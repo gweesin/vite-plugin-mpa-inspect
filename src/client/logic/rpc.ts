@@ -38,7 +38,7 @@ function createStaticRpcClient(): RPCFunctions {
 
 export const rpc = isStaticMode
   ? createStaticRpcClient() as BirpcReturn<RPCFunctions>
-  : createRPCClient<RPCFunctions, Pick<RPCFunctions, 'moduleUpdated'>>('vite-plugin-inspect', (await createHotContext('/___', `${location.pathname.split('/__inspect')[0] || ''}/`.replace(/\/\//g, '/')))!, {
+  : createRPCClient<RPCFunctions, Pick<RPCFunctions, 'moduleUpdated'>>('vite-plugin-mpa-inspect', (await createHotContext('/___', `${location.pathname.split('/__inspect_mpa')[0] || ''}/`.replace(/\/\//g, '/')))!, {
     moduleUpdated() {
       refetch()
     },

@@ -12,7 +12,7 @@ import { isStaticMode, refetch, toggleDark } from '../logic'
       <div h-full w-1 border="r main" />
       <a
         text-lg icon-btn
-        href="https://github.com/antfu/vite-plugin-inspect"
+        href="https://github.com/antfu/vite-plugin-mpa-inspect"
         target="_blank"
       >
         <div i-carbon-logo-github />

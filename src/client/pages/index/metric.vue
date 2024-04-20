@@ -62,7 +62,7 @@ watch(metricDisplayHook, clearPlugin)
 
 getHot().then((hot) => {
   if (hot) {
-    hot.on('vite-plugin-inspect:update', () => {
+    hot.on('vite-plugin-mpa-inspect:update', () => {
       refetch()
     })
   }
