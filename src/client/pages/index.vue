@@ -34,7 +34,7 @@ onMounted(() => {
   </NavBar>
   <Container of-auto>
     <KeepAlive>
-      <EntryList :entries="searchResults" :prefix="list.prefix" />
+      <EntryList :entries="searchResults" :root="list.root" />
     </KeepAlive>
   </Container>
   <div

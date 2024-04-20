@@ -4,12 +4,12 @@ import { listMode, searchText } from '../logic'
 
 const props = defineProps<{
   entries: EntryInfo[]
-  prefix: string
+  root: string
 }>()
 
 const fullPathEntries = computed(() => props.entries.map(e => ({
   ...e,
-  fullPath: `${props.prefix}/${e.entryPath}`,
+  entryPath: e.entryPath.replace(/\\/g, '/').replace(props.root, ''),
 })))
 
 const { list, containerProps, wrapperProps } = useVirtualList(
@@ -39,14 +39,14 @@ const { list, containerProps, wrapperProps } = useVirtualList(
           v-for="m in list"
           :key="m.data.entryPath"
           class="block cursor-pointer border-b border-main px-3 py-2 text-left text-sm font-mono"
-          :href="m.data.entryPath === 'index.html' ? '/' : m.data.fullPath"
+          :href="m.data.entryPath === 'index.html' ? '/' : m.data.entryPath"
         >
           <!-- <EntryId :id="m.data.entryName" /> -->
           <div v-if="listMode === &quot;detailed&quot;" text-xs flex="~ gap-1">
             {{ m.data.entryName }}
             <div flex-auto />
             <span op75>
-              {{ m.data.fullPath }}
+              {{ m.data.entryPath }}
             </span>
           </div>
         </a>

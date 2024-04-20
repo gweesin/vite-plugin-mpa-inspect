@@ -8,13 +8,11 @@ import { DUMMY_LOAD_PLUGIN_NAME } from './constants'
 
 export class ViteInspectContext {
   public config: ResolvedConfig = undefined!
-  public prefix: string = ''
 
   public recorderClient = new Recorder()
   public recorderServer = new Recorder()
 
   constructor(public options: any) {
-    this.prefix = options.prefix || ''
   }
 
   getRecorder(ssr: boolean | undefined) {
@@ -41,7 +39,6 @@ export class ViteInspectContext {
   getList(server: ViteDevServer) {
     return {
       root: this.config.root,
-      prefix: this.prefix,
       entries: this.getEntriesInfo(this.config.build.rollupOptions.input),
     }
   }

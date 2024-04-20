@@ -41,9 +41,4 @@ export interface Options {
    * @default false
    */
   open?: boolean
-
-  /**
-   * Prefix for path of MPA entries
-   */
-  prefix?: string
 }
