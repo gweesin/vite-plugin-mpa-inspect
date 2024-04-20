@@ -3,7 +3,7 @@ import { isStaticMode } from './logic'
 
 onMounted(() => {
   if (isStaticMode)
-    document.title = 'Vite Inspect (Production)'
+    document.title = 'Vite MPA Inspect (Production)'
 })
 </script>
 

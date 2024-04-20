@@ -11,7 +11,7 @@ onMounted(() => {
 
 <template>
   <NavBar>
-    <div i-carbon-ibm-watson-discovery title="Vite Inspect" text-xl />
+    <div i-carbon-ibm-watson-discovery title="Vite MPA Inspect" text-xl />
     <SearchBox />
     <div flex-auto />
 

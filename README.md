@@ -2,6 +2,8 @@
 
 [![NPM version](https://img.shields.io/npm/v/vite-plugin-mpa-inspect?color=a1b858&label=)](https://www.npmjs.com/package/vite-plugin-mpa-inspect)
 
+Forked and inspired by [vite-plugin-inspect](https://github.com/antfu/vite-plugin-inspect)
+
 Inspect the intermediate state of Vite plugins. Useful for debugging and authoring plugins.
 
 <img width="1304" src="https://user-images.githubusercontent.com/46585162/134683677-487e3e03-fa6b-49ad-bde0-520ebb641a96.png">
@@ -13,8 +15,6 @@ Inspect the intermediate state of Vite plugins. Useful for debugging and authori
 ```bash
 npm i -D vite-plugin-mpa-inspect
 ```
-
-> Since `vite-plugin-inspect@v0.7.0`, Vite v3.1 or above is required.
 
 Add plugin to your `vite.config.ts`:
 
