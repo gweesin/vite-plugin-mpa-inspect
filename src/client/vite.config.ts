@@ -56,7 +56,7 @@ export default defineConfig({
       },
     }),
     Pages({
-      pagesDir: 'pages',
+      dirs: 'pages',
     }),
     Components({
       dirs: ['components'],
