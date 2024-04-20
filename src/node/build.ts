@@ -5,7 +5,6 @@ import { hash } from 'ohash'
 import type { ModuleTransformInfo } from '../types'
 import { DIR_CLIENT } from '../dir'
 import type { Recorder } from './recorder'
-import { DUMMY_LOAD_PLUGIN_NAME } from './constants'
 import type { ViteInspectContext } from './context'
 
 export async function generateBuild(ctx: ViteInspectContext, config: ResolvedConfig) {
@@ -23,13 +22,10 @@ export async function generateBuild(ctx: ViteInspectContext, config: ResolvedCon
   await fs.ensureDir(reportsDir)
   await fs.copy(DIR_CLIENT, targetDir)
 
-  const isVirtual = (pluginName: string, transformName: string) => pluginName !== DUMMY_LOAD_PLUGIN_NAME && transformName !== 'vite:load-fallback'
-
   function list() {
     return {
       root: config.root,
-      modules: ctx.getModulesInfo(ctx.recorderClient, null, isVirtual),
-      ssrModules: ctx.getModulesInfo(ctx.recorderServer, null, isVirtual),
+      entries: ctx.getEntriesInfo(config.build.rollupOptions.input),
     }
   }
 

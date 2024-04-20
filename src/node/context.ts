@@ -1,8 +1,9 @@
-import { resolve } from 'node:path'
+import path, { resolve } from 'node:path'
 import { Buffer } from 'node:buffer'
 import { createFilter } from '@rollup/pluginutils'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
-import type { ModuleInfo, PluginMetricInfo, ResolveIdInfo } from '../types'
+import type { InputOption } from 'rollup'
+import type { EntryInfo, ModuleInfo, PluginMetricInfo, ResolveIdInfo } from '../types'
 import { Recorder } from './recorder'
 import { DUMMY_LOAD_PLUGIN_NAME } from './constants'
 
@@ -37,17 +38,46 @@ export class ViteInspectContext {
       : id
   }
 
+  // eslint-disable-next-line unused-imports/no-unused-vars
   getList(server: ViteDevServer) {
-    const isVirtual = (pluginName: string) => pluginName !== DUMMY_LOAD_PLUGIN_NAME
-    const getDeps = (id: string) => Array.from(server.moduleGraph.getModuleById(id)?.importedModules || [])
-      .map(i => i.id || '')
-      .filter(Boolean)
-
     return {
       root: this.config.root,
-      modules: this.getModulesInfo(this.recorderClient, getDeps, isVirtual),
-      ssrModules: this.getModulesInfo(this.recorderServer, getDeps, isVirtual),
+      entries: this.getEntriesInfo(this.config.build.rollupOptions.input),
     }
+  }
+
+  getEntriesInfo(
+    rollupInput?: InputOption,
+  ) {
+    if (!rollupInput) {
+      return [{
+        entryName: 'index',
+        entryPath: 'index.html',
+      }]
+    }
+
+    if (typeof rollupInput === 'string') {
+      return [{
+        entryName: path.basename(rollupInput, '.html'),
+        entryPath: rollupInput,
+      }] as EntryInfo[]
+    }
+
+    if (Array.isArray(rollupInput)) {
+      return rollupInput.map(id => ({
+        entryName: path.basename(id, '.html'),
+        entryPath: id,
+      })) as EntryInfo[]
+    }
+
+    if (rollupInput instanceof Object) {
+      return Object.entries(rollupInput).map(([entryName, entryPath]) => ({
+        entryName,
+        entryPath,
+      })) as EntryInfo[]
+    }
+
+    return [] as EntryInfo[]
   }
 
   getModulesInfo(
