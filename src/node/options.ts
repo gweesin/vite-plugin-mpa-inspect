@@ -1,5 +1,3 @@
-import type { FilterPattern } from '@rollup/pluginutils'
-
 export interface Options {
   /**
    * Enable the inspect plugin in dev mode (could be some performance overhead)
@@ -16,27 +14,12 @@ export interface Options {
   build?: boolean
 
   /**
-   * @deprecated use `dev` or `build` option instead.
-   */
-  enabled?: boolean
-
-  /**
    * Directory for build inspector UI output
    * Only work in build mode
    *
    * @default '.vite-inspect'
    */
   outputDir?: string
-
-  /**
-   * Filter for modules to be inspected
-   */
-  include?: FilterPattern
-
-  /**
-   * Filter for modules to not be inspected
-   */
-  exclude?: FilterPattern
 
   /**
    * Base URL for inspector UI
@@ -51,10 +34,16 @@ export interface Options {
    * @default false
    */
   silent?: boolean
+
   /**
    * Automatically open inspect page
    *
    * @default false
    */
   open?: boolean
+
+  /**
+   * Prefix for path of MPA entries
+   */
+  prefix?: string
 }

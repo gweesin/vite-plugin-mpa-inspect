@@ -4,10 +4,16 @@ import { listMode, searchText } from '../logic'
 
 const props = defineProps<{
   entries: EntryInfo[]
+  prefix: string
 }>()
 
+const fullPathEntries = computed(() => props.entries.map(e => ({
+  ...e,
+  fullPath: `${props.prefix}/${e.entryPath}`,
+})))
+
 const { list, containerProps, wrapperProps } = useVirtualList(
-  toRef(props, 'entries'),
+  fullPathEntries,
   {
     itemHeight: listMode.value === 'detailed' ? 53 : 37,
   },
@@ -33,14 +39,14 @@ const { list, containerProps, wrapperProps } = useVirtualList(
           v-for="m in list"
           :key="m.data.entryPath"
           class="block cursor-pointer border-b border-main px-3 py-2 text-left text-sm font-mono"
-          :href="root + m.data.entryPath"
+          :href="m.data.entryPath === 'index.html' ? '/' : m.data.fullPath"
         >
           <!-- <EntryId :id="m.data.entryName" /> -->
           <div v-if="listMode === &quot;detailed&quot;" text-xs flex="~ gap-1">
             {{ m.data.entryName }}
             <div flex-auto />
             <span op75>
-              {{ m.data.entryPath }}
+              {{ m.data.fullPath }}
             </span>
           </div>
         </a>

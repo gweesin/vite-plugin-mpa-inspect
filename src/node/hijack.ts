@@ -1,8 +1,6 @@
 import type { ObjectHook, ResolveIdResult, TransformResult } from 'rollup'
 import type { Plugin } from 'vite'
 import Debug from 'debug'
-import { parse as parseErrorStacks } from 'error-stack-parser-es'
-import type { ParsedError } from '../types'
 import type { ViteInspectContext } from './context'
 
 const debug = Debug('vite-plugin-mpa-inspect')
@@ -54,36 +52,15 @@ export function hijackPlugin(
   plugin: Plugin,
   ctx: ViteInspectContext,
 ) {
-  hijackHook(plugin, 'transform', async (fn, context, args, order) => {
-    const code = args[0]
-    const id = args[1]
-    const ssr = args[2]?.ssr
-
+  hijackHook(plugin, 'transform', async (fn, context, args) => {
     let _result: TransformResult
     let error: any
 
-    const start = Date.now()
     try {
       _result = await fn.apply(context, args)
     }
     catch (_err) {
       error = _err
-    }
-    const end = Date.now()
-
-    const result = error ? '[Error]' : (typeof _result === 'string' ? _result : _result?.code)
-    if (ctx.filter(id)) {
-      const sourcemaps = typeof _result === 'string' ? null : _result?.map
-      const rec = ctx.getRecorder(ssr)
-      rec.recordTransform(id, {
-        name: plugin.name,
-        result,
-        start,
-        end,
-        order,
-        sourcemaps,
-        error: error ? parseError(error) : undefined,
-      }, code)
     }
 
     if (error)
@@ -93,37 +70,15 @@ export function hijackPlugin(
   })
 
   hijackHook(plugin, 'load', async (fn, context, args) => {
-    const id = args[0]
-    const ssr = args[1]?.ssr
-
     let _result: TransformResult
     let error: any
 
-    const start = Date.now()
     try {
       _result = await fn.apply(context, args)
     }
     catch (err) {
       error = err
     }
-    const end = Date.now()
-
-    const result = error ? '[Error]' : (typeof _result === 'string' ? _result : _result?.code)
-    const sourcemaps = typeof _result === 'string' ? null : _result?.map
-
-    if (ctx.filter(id) && result) {
-      ctx
-        .getRecorder(ssr)
-        .recordLoad(id, {
-          name: plugin.name,
-          result,
-          start,
-          end,
-          sourcemaps,
-          error: error ? parseError(error) : undefined,
-        })
-    }
-
     if (error)
       throw error
 
@@ -165,16 +120,6 @@ export function hijackPlugin(
 
     return _result
   })
-}
-
-function parseError(error: any): ParsedError {
-  const stack = parseErrorStacks(error)
-  const message = error.message || String(error)
-  return {
-    message,
-    stack,
-    raw: error,
-  }
 }
 
 function stringifyError(err: any) {

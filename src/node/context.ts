@@ -1,6 +1,5 @@
 import path, { resolve } from 'node:path'
 import { Buffer } from 'node:buffer'
-import { createFilter } from '@rollup/pluginutils'
 import type { ResolvedConfig, ViteDevServer } from 'vite'
 import type { InputOption } from 'rollup'
 import type { EntryInfo, ModuleInfo, PluginMetricInfo, ResolveIdInfo } from '../types'
@@ -8,14 +7,14 @@ import { Recorder } from './recorder'
 import { DUMMY_LOAD_PLUGIN_NAME } from './constants'
 
 export class ViteInspectContext {
-  public filter: (id: string) => boolean
   public config: ResolvedConfig = undefined!
+  public prefix: string = ''
 
   public recorderClient = new Recorder()
   public recorderServer = new Recorder()
 
   constructor(public options: any) {
-    this.filter = createFilter(options.include, options.exclude)
+    this.prefix = options.prefix || ''
   }
 
   getRecorder(ssr: boolean | undefined) {
@@ -42,6 +41,7 @@ export class ViteInspectContext {
   getList(server: ViteDevServer) {
     return {
       root: this.config.root,
+      prefix: this.prefix,
       entries: this.getEntriesInfo(this.config.build.rollupOptions.input),
     }
   }
@@ -102,7 +102,6 @@ export class ViteInspectContext {
       .map((id): ModuleInfo => {
         let totalTime = 0
         const plugins = (recorder.transform[id] || [])
-          .filter(tr => tr.result)
           .map((transItem) => {
             const delta = transItem.end - transItem.start
             totalTime += delta
@@ -172,7 +171,7 @@ export class ViteInspectContext {
         })
       })
 
-    const metrics = Object.values(map).filter(Boolean)
+    const metrics = Object.values(map)
       .sort((a, b) => a.name.localeCompare(b.name))
 
     return metrics

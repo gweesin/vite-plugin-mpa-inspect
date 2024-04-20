@@ -45,6 +45,7 @@ export interface ModulesList {
 
 export interface EntriesList {
   root: string
+  prefix: string
   entries: EntryInfo[]
 }
 

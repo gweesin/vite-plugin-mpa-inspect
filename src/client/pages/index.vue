@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {
+  list,
   listMode,
   refetch,
   searchResults,
@@ -33,7 +34,7 @@ onMounted(() => {
   </NavBar>
   <Container of-auto>
     <KeepAlive>
-      <EntryList :entries="searchResults" />
+      <EntryList :entries="searchResults" :prefix="list.prefix" />
     </KeepAlive>
   </Container>
   <div
