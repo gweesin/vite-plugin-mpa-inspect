@@ -9,9 +9,7 @@ import { DIR_CLIENT } from '../dir'
 import type { Options } from './options'
 import { ViteInspectContext } from './context'
 import { hijackPlugin } from './hijack'
-import { generateBuild } from './build'
 import { openBrowser } from './utils'
-import { createPreviewServer } from './preview'
 
 export * from './options'
 
@@ -107,11 +105,6 @@ export default function PluginInspect(options: Options = {}): Plugin {
   function configureServer(server: ViteDevServer): RPCFunctions {
     const _invalidateModule = server.moduleGraph.invalidateModule
     server.moduleGraph.invalidateModule = function (...args) {
-      const mod = args[0]
-      if (mod?.id) {
-        ctx.recorderClient.invalidate(mod.id)
-        ctx.recorderServer.invalidate(mod.id)
-      }
       return _invalidateModule.apply(this, args)
     }
 
@@ -124,11 +117,6 @@ export default function PluginInspect(options: Options = {}): Plugin {
 
     const rpcFunctions: RPCFunctions = {
       list: () => ctx.getList(server),
-      getIdInfo,
-      getPluginMetrics: (ssr = false) => ctx.getPluginMetrics(ssr),
-      getServerMetrics,
-      resolveId: (id: string, ssr = false) => ctx.resolveId(id, ssr),
-      clear: clearId,
       moduleUpdated: () => {},
     }
 
@@ -142,36 +130,6 @@ export default function PluginInspect(options: Options = {}): Plugin {
       debouncedModuleUpdated()
       next()
     })
-
-    function getServerMetrics() {
-      return serverPerf || {}
-    }
-
-    async function getIdInfo(id: string, ssr = false, clear = false) {
-      if (clear) {
-        clearId(id, ssr)
-        try {
-          await server.transformRequest(id, { ssr })
-        }
-        catch {}
-      }
-      const resolvedId = ctx.resolveId(id, ssr)
-      const recorder = ctx.getRecorder(ssr)
-      return {
-        resolvedId,
-        transforms: recorder.transform[resolvedId] || [],
-      }
-    }
-
-    function clearId(_id: string, ssr = false) {
-      const id = ctx.resolveId(_id)
-      if (id) {
-        const mod = server.moduleGraph.getModuleById(id)
-        if (mod)
-          server.moduleGraph.invalidateModule(mod)
-        ctx.getRecorder(ssr).invalidate(id)
-      }
-    }
 
     const _print = server.printUrls
     server.printUrls = () => {
@@ -220,31 +178,7 @@ export default function PluginInspect(options: Options = {}): Plugin {
     },
     configResolved(_config) {
       config = ctx.config = _config
-      config.plugins.forEach(plugin => hijackPlugin(plugin, ctx))
-      const _createResolver = config.createResolver
-      // @ts-expect-error mutate readonly
-      config.createResolver = function (this: any, ...args: any) {
-        const _resolver = _createResolver.apply(this, args)
-
-        return async function (this: any, ...args: any) {
-          const id = args[0]
-          const aliasOnly = args[2]
-          const ssr = args[3]
-
-          const start = Date.now()
-          const result = await _resolver.apply(this, args)
-          const end = Date.now()
-
-          if (result && result !== id) {
-            const pluginName = aliasOnly ? 'alias' : 'vite:resolve (+alias)'
-            ctx
-              .getRecorder(ssr)
-              .recordResolveId(id, { name: pluginName, result, start, end })
-          }
-
-          return result
-        }
-      }
+      config.plugins.forEach(plugin => hijackPlugin(plugin))
     },
     configureServer(server) {
       const rpc = configureServer(server)
@@ -258,8 +192,7 @@ export default function PluginInspect(options: Options = {}): Plugin {
     },
     load: {
       order: 'pre',
-      handler(id, { ssr } = {}) {
-        ctx.getRecorder(ssr).invalidate(id)
+      handler() {
         return null
       },
     },
@@ -270,15 +203,6 @@ export default function PluginInspect(options: Options = {}): Plugin {
         event: 'vite-plugin-mpa-inspect:update',
         data: { ids } as HMRData,
       })
-    },
-    async buildEnd() {
-      if (!build)
-        return
-      const dir = await generateBuild(ctx, config)
-      // eslint-disable-next-line no-console
-      console.log(c.green('Inspect report generated at'), c.dim(`${dir}`))
-      if (_open && !isCI)
-        createPreviewServer(dir)
     },
   }
   return plugin

@@ -1,7 +1,6 @@
 import type { ObjectHook, ResolveIdResult, TransformResult } from 'rollup'
 import type { Plugin } from 'vite'
 import Debug from 'debug'
-import type { ViteInspectContext } from './context'
 
 const debug = Debug('vite-plugin-mpa-inspect')
 
@@ -50,7 +49,6 @@ function hijackHook<K extends keyof Plugin>(plugin: Plugin, name: K, wrapper: Ho
 
 export function hijackPlugin(
   plugin: Plugin,
-  ctx: ViteInspectContext,
 ) {
   hijackHook(plugin, 'transform', async (fn, context, args) => {
     let _result: TransformResult
@@ -86,33 +84,14 @@ export function hijackPlugin(
   })
 
   hijackHook(plugin, 'resolveId', async (fn, context, args) => {
-    const id = args[0]
-    const ssr = args[2]?.ssr
-
     let _result: ResolveIdResult
     let error: any
 
-    const start = Date.now()
     try {
       _result = await fn.apply(context, args)
     }
     catch (err) {
       error = err
-    }
-    const end = Date.now()
-
-    const result = error ? stringifyError(error) : (typeof _result === 'object' ? _result?.id : _result)
-
-    if (result && result !== id) {
-      ctx
-        .getRecorder(ssr)
-        .recordResolveId(id, {
-          name: plugin.name,
-          result,
-          start,
-          end,
-          error,
-        })
     }
 
     if (error)
@@ -120,8 +99,4 @@ export function hijackPlugin(
 
     return _result
   })
-}
-
-function stringifyError(err: any) {
-  return String(err.stack ? err.stack : err)
 }

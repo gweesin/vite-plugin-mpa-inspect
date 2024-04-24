@@ -41,7 +41,6 @@ const { list, containerProps, wrapperProps } = useVirtualList(
           class="block cursor-pointer border-b border-main px-3 py-2 text-left text-sm font-mono"
           :href="m.data.entryPath === 'index.html' ? '/' : m.data.entryPath"
         >
-          <!-- <EntryId :id="m.data.entryName" /> -->
           <div v-if="listMode === &quot;detailed&quot;" text-xs flex="~ gap-1">
             {{ m.data.entryName }}
             <div flex-auto />

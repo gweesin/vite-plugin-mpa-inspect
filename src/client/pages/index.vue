@@ -28,9 +28,6 @@ onMounted(() => {
       <div v-else i-carbon-network-4 />
     </button>
     <div h-full w-1 border="r main" />
-    <RouterLink text-lg icon-btn to="/metric" title="Metrics">
-      <div i-carbon-meter />
-    </RouterLink>
   </NavBar>
   <Container of-auto>
     <KeepAlive>

@@ -10,13 +10,6 @@ import { isStaticMode, refetch, toggleDark } from '../logic'
         <div i-carbon-renew />
       </button>
       <div h-full w-1 border="r main" />
-      <a
-        text-lg icon-btn
-        href="https://github.com/antfu/vite-plugin-mpa-inspect"
-        target="_blank"
-      >
-        <div i-carbon-logo-github />
-      </a>
       <button class="text-lg icon-btn" title="Toggle Dark Mode" @click="toggleDark()">
         <div i-carbon-sun dark:i-carbon-moon />
       </button>
