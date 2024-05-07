@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { EntryInfo } from '../../types'
-import { listMode, searchText } from '../logic'
+import { listMode, openNewPage, searchText } from '../logic'
 
 const props = defineProps<{
   entries: EntryInfo[]
@@ -40,6 +40,7 @@ const { list, containerProps, wrapperProps } = useVirtualList(
           :key="m.data.entryPath"
           class="block cursor-pointer border-b border-main px-3 py-2 text-left text-sm font-mono"
           :href="m.data.entryPath === 'index.html' ? '/' : m.data.entryPath"
+          :target="openNewPage ? '_blank' : '_self'"
         >
           <div v-if="listMode === &quot;detailed&quot;" text-xs flex="~ gap-1">
             {{ m.data.entryName }}

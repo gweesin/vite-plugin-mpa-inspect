@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { exactSearch, inspectSSR, searchText } from '../logic'
+import { exactSearch, openNewPage, searchText } from '../logic'
 </script>
 
 <template>
@@ -12,12 +12,13 @@ import { exactSearch, inspectSSR, searchText } from '../logic'
   <div class="h-min flex flex-col select-none gap-1 whitespace-nowrap text-xs">
     <div class="flex gap-2">
       <label class="flex">
-        <input v-model="inspectSSR" type="checkbox" class="my-auto">
-        <div class="ml-1">ssr</div>
-      </label>
-      <label class="flex">
         <input v-model="exactSearch" type="checkbox" class="my-auto">
         <div class="ml-1">exact search</div>
+      </label>
+
+      <label class="flex">
+        <input v-model="openNewPage" type="checkbox" class="my-auto">
+        <div class="ml-1">open in new page</div>
       </label>
     </div>
   </div>

@@ -6,7 +6,7 @@ import { rpc } from './rpc'
 
 export const onRefetch = createEventHook<void>()
 export const listMode = useStorage<'list' | 'detailed'>('vite-inspect-mode', 'detailed')
-export const inspectSSR = useStorage('vite-inspect-ssr', false)
+export const openNewPage = useStorage('vite-inspect-open-new-page', false)
 
 export const list = ref(await rpc.list()) as Ref<EntriesList>
 
